@@ -1,1 +1,2 @@
-# Django-music-archive
+# Django music archive
+A simple Music Archive project.
