@@ -3,8 +3,9 @@ A simple Django project that lets you organize your music and audio files.
 You can Create Albums and assign songs to them.
 
 ## Features
-  Storing, Managing, and Playing songs.
-  Playing songs locally. You can use this project on a Raspberry Pi and use it as a media player
+  1. Storing, Managing, and Playing songs.
+  2. Playing songs locally. You can use this project on a Raspberry Pi and use it as a media player
+  
 ## How to run
 
 1. Make sure `python3` and `pip` are installed in your system.
