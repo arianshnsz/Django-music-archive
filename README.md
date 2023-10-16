@@ -1,7 +1,10 @@
 # Django music archive
-A simple Django project that let's you organize your music and audio files.
+A simple Django project that lets you organize your music and audio files.
 You can Create Albums and assign songs to them.
 
+## Features
+  -Storing, Managing, and Playing songs.
+  -PLaying songs locally. You can use this project on a raspberry pi and use it as a media player
 ## How to run
 
 1. Make sure `python3` and `pip` are installed in your system.
