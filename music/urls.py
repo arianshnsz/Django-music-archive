@@ -20,4 +20,7 @@ urlpatterns = [
     path('api/album/add/', views.AlbumCreateAPI.as_view()),
     path('api/album/<int:pk>/', views.AlbumDetailAPI.as_view()),
     path('api/song/add/', views.SongCreateAPI.as_view()),
+
+    path('toggle_playback/<int:song_id>/',
+         views.TogglePlaybackView.as_view(), name='toggle_playback'),
 ]
