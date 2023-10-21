@@ -7,7 +7,7 @@ class Album(models.Model):
     album_title = models.CharField(max_length=250)
     artist = models.CharField(max_length=250)
     album_logo = models.ImageField(upload_to='album_cover')
-    owner = models.ForeignKey(
+    owner = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
     def get_absolute_url(self):
