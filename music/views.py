@@ -1,11 +1,19 @@
 from django.views import generic
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from rest_framework import generics
 
 from music.models import Album, Song
 from music import serializers
+
+import signal
+import subprocess
+
+vlc_process = None  # Store the VLC process
+is_paused = False
+current_song_id = None  # Store the ID of the currently playing song
 
 
 class AlbumList(LoginRequiredMixin, generic.ListView):
@@ -92,3 +100,45 @@ class AlbumDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 
 class SongCreateAPI(generics.CreateAPIView):
     serializer_class = serializers.SongSerializer
+
+# for playing locally
+
+
+class TogglePlaybackView(View):
+    def post(self, request, song_id, *args, **kwargs):
+        global vlc_process, is_paused, current_song_id
+
+        song = Song.objects.get(pk=song_id)
+
+        if current_song_id == song_id:
+            if vlc_process and not is_paused:
+                vlc_process.send_signal(signal.SIGSTOP)  # Pause the playback
+                is_paused = True
+                status = 'paused'
+            elif vlc_process and is_paused:
+                vlc_process.send_signal(signal.SIGCONT)  # Resume the playback
+                is_paused = False
+                status = 'resumed'
+            else:
+                vlc_command = ['vlc', song.music_file.path]
+                vlc_process = subprocess.Popen(vlc_command)
+                is_paused = False
+                status = 'playing'
+        else:
+            # Stop the currently playing song
+            if vlc_process:
+                vlc_process.terminate()
+                vlc_process = None
+                is_paused = False
+
+            # Start the new song
+            vlc_command = ['cvlc', song.music_file.path]
+            vlc_process = subprocess.Popen(vlc_command)
+            is_paused = False
+            status = 'playing'
+
+        # Update the currently playing song
+        current_song_id = song_id
+
+        referring_page = request.META.get('HTTP_REFERER', '/')
+        return redirect(referring_page)
